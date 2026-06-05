@@ -1,0 +1,139 @@
+/* ---------- ベース ---------- */
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: linear-gradient(180deg, #eaf2ff, #f7faff);
+  color: #111;
+}
+
+button {
+  font-size: 18px;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #5fa8ff, #3f8cff);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+  transform: scale(0.96);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+input {
+  font-size: 18px;
+  padding: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+}
+
+/* ---------- 表紙 ---------- */
+
+#cover {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 110px;
+  gap: 24px;
+}
+
+#cover h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+/* ---------- クイズ ---------- */
+
+#quizArea {
+  display: none;
+  max-width: 520px;
+  margin: 40px auto;
+  padding: 24px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+#question {
+  font-size: 22px;
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+/* ---------- 画像 ---------- */
+
+#imageArea {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+#questionImage {
+  display: none;
+  max-width: 100%;
+  max-height: 260px;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+/* ---------- ボタン ---------- */
+
+.buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.buttons button {
+  flex: 1;
+}
+
+/* ---------- 結果 ---------- */
+
+#feedback {
+  margin-top: 16px;
+  font-size: 18px;
+}
+
+#score {
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+/* ---------- 終了 ---------- */
+
+#endArea {
+  display: none;
+  margin-top: 24px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+#endArea button {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* ---------- スマホ ---------- */
+
+@media (max-width: 600px) {
+  #quizArea {
+    margin: 15px;
+    padding: 18px;
+  }
+
+  #question {
+    font-size: 20px;
+  }
+
+  button {
+    font-size: 16px;
+  }
+}
