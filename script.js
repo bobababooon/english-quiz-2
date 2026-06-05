@@ -1,6 +1,6 @@
 const cover = document.getElementById("cover");
 const quizArea = document.getElementById("quizArea");
-const zipInput = document.getElementById("zipInput");
+const fileInput = document.getElementById("fileInput");
 
 const startBtn = document.getElementById("startBtn");
 const continueBtn = document.getElementById("continueBtn");
@@ -15,7 +15,6 @@ const submitBtn = document.getElementById("submitBtn");
 const nextBtn = document.getElementById("nextBtn");
 const saveBtn = document.getElementById("saveBtn");
 const reviewBtn = document.getElementById("reviewBtn");
-
 const endArea = document.getElementById("endArea");
 
 const questionImage =
@@ -30,17 +29,14 @@ let answered = false;
 
 let wrongSet = new Map();
 
-const imageFiles = {};
-
 /* ---------- 表紙 ---------- */
 
 startBtn.onclick = () => {
-  zipInput.value = "";
-  zipInput.click();
+  fileInput.value = "";
+  fileInput.click();
 };
 
 continueBtn.onclick = () => {
-
   const saved =
     localStorage.getItem("quizState");
 
@@ -63,82 +59,28 @@ restartBtn.onclick = () => {
   location.reload();
 };
 
-/* ---------- ZIP読込 ---------- */
+/* ---------- CSV読み込み ---------- */
 
-zipInput.addEventListener(
-  "change",
-  async e => {
+fileInput.addEventListener("change", e => {
+  const file = e.target.files[0];
 
-    const file = e.target.files[0];
+  if (!file) return;
 
-    if (!file) return;
+  const reader = new FileReader();
 
-    const zip =
-      await JSZip.loadAsync(file);
+  reader.onload = () => {
 
-    Object.keys(imageFiles)
-      .forEach(k => delete imageFiles[k]);
-
-    let csvText = "";
-
-    const promises = [];
-
-    zip.forEach((path, entry) => {
-
-      if (
-        path.toLowerCase()
-          .includes("bobaba")
-      ) {
-
-        promises.push(
-
-          entry.async("string")
-            .then(text => {
-              csvText = text;
-            })
-
-        );
-      }
-
-      if (
-        /\.(jpg|jpeg|png|gif|webp)$/i
-          .test(path)
-      ) {
-
-        promises.push(
-
-          entry.async("blob")
-            .then(blob => {
-
-              const filename =
-                path.split("/")
-                  .pop();
-
-              imageFiles[filename] =
-                URL.createObjectURL(blob);
-
-            })
-
-        );
-      }
-
-    });
-
-    await Promise.all(promises);
-
-    words = csvText
+    words = reader.result
       .split(/\r?\n/)
       .filter(line => line.trim())
       .map(line => {
-
         const cols = line.split(",");
 
         return [
-          cols[0]?.trim() || "",
-          cols[1]?.trim() || "",
-          cols[2]?.trim() || ""
+          cols[0]?.trim() || "", // 英単語
+          cols[1]?.trim() || "", // 意味
+          cols[2]?.trim() || ""  // 画像
         ];
-
       });
 
     remaining = [...words];
@@ -148,22 +90,19 @@ zipInput.addEventListener(
     wrongSet.clear();
 
     startQuiz();
+  };
 
-  }
-);
+  reader.readAsText(file, "UTF-8");
+});
 
-/* ---------- 開始 ---------- */
+/* ---------- クイズ開始 ---------- */
 
 function startQuiz() {
-
   cover.style.display = "none";
-
   quizArea.style.display = "block";
-
   endArea.style.display = "none";
 
   nextQuestion();
-
 }
 
 /* ---------- 次の問題 ---------- */
@@ -178,8 +117,7 @@ function nextQuestion() {
   current =
     remaining[
       Math.floor(
-        Math.random() *
-        remaining.length
+        Math.random() * remaining.length
       )
     ];
 
@@ -188,22 +126,13 @@ function nextQuestion() {
   questionEl.textContent =
     "意味: " + current[1];
 
-  if (
-    current[2] &&
-    imageFiles[current[2]]
-  ) {
+  /* 画像 */
 
-    questionImage.src =
-      imageFiles[current[2]];
-
-    questionImage.style.display =
-      "block";
-
+  if (current[2]) {
+    questionImage.src = current[2];
+    questionImage.style.display = "block";
   } else {
-
-    questionImage.style.display =
-      "none";
-
+    questionImage.style.display = "none";
   }
 
   answerEl.value = "";
@@ -216,18 +145,15 @@ function nextQuestion() {
   answerEl.focus();
 
   saveState();
-
 }
 
 /* ---------- 正規化 ---------- */
 
 function normalize(str) {
-
   return str
     .toLowerCase()
     .replace(/\s+/g, " ")
     .trim();
-
 }
 
 /* ---------- カッコ対応 ---------- */
@@ -320,12 +246,17 @@ function checkAnswer() {
     `正解: ${correct}`;
 
   saveState();
-
 }
 
-submitBtn.onclick = checkAnswer;
+/* ---------- ボタン ---------- */
 
-nextBtn.onclick = nextQuestion;
+submitBtn.onclick =
+  checkAnswer;
+
+nextBtn.onclick =
+  nextQuestion;
+
+/* ---------- Enter ---------- */
 
 answerEl.addEventListener(
   "keydown",
@@ -342,6 +273,7 @@ answerEl.addEventListener(
 
   }
 );
+
 /* ---------- 終了 ---------- */
 
 function finishQuiz() {
@@ -361,10 +293,9 @@ function finishQuiz() {
   localStorage.removeItem(
     "quizState"
   );
-
 }
 
-/* ---------- 間違えた問題だけ復習 ---------- */
+/* ---------- 復習 ---------- */
 
 reviewBtn.onclick = () => {
 
@@ -384,10 +315,9 @@ reviewBtn.onclick = () => {
     "none";
 
   nextQuestion();
-
 };
 
-/* ---------- 間違えた問題をCSV保存 ---------- */
+/* ---------- 間違い保存 ---------- */
 
 saveBtn.onclick = () => {
 
@@ -398,7 +328,6 @@ saveBtn.onclick = () => {
     );
 
     return;
-
   }
 
   let csv = "";
@@ -415,9 +344,7 @@ saveBtn.onclick = () => {
   const blob =
     new Blob(
       [csv],
-      {
-        type: "text/csv"
-      }
+      { type: "text/csv" }
     );
 
   const url =
@@ -427,14 +354,12 @@ saveBtn.onclick = () => {
     document.createElement("a");
 
   a.href = url;
-
   a.download =
     "wrong_words.csv";
 
   a.click();
 
   URL.revokeObjectURL(url);
-
 };
 
 /* ---------- 続き保存 ---------- */
@@ -460,5 +385,4 @@ function saveState() {
     "quizState",
     JSON.stringify(data)
   );
-
 }
