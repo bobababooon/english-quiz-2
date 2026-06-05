@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英単語クイズ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 表紙 -->
+  <div id="cover">
+    <h1>英単語クイズ</h1>
+
+    <button id="startBtn">始めから</button>
+    <button id="continueBtn">続きから</button>
+  </div>
+
+  <!-- CSV選択 -->
+  <input
+    type="file"
+    id="fileInput"
+    accept=".csv"
+    style="display:none;"
+  >
+
+  <!-- クイズ -->
+  <div id="quizArea">
+
+    <div id="question"></div>
+
+    <!-- 画像表示 -->
+    <div id="imageArea">
+      <img id="questionImage" alt="問題画像">
+    </div>
+
+    <input
+      id="answer"
+      type="text"
+      placeholder="答えを入力"
+      autocomplete="off"
+    >
+
+    <div class="buttons">
+      <button id="submitBtn">答える</button>
+      <button id="nextBtn">次へ</button>
+    </div>
+
+    <div id="feedback"></div>
+
+    <div id="score"></div>
+
+    <!-- 終了後 -->
+    <div id="endArea">
+      <button id="saveBtn">
+        間違えた単語を保存
+      </button>
+
+      <button id="restartBtn">
+        始めから
+      </button>
+
+      <button id="reviewBtn">
+        間違えた単語でもう一回
+      </button>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
