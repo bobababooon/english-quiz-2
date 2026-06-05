@@ -87,7 +87,7 @@ zipInput.addEventListener(
 
       if (
         path.toLowerCase()
-          .endsWith(".csv")
+          .endsWith("words.csv")
       ) {
 
         promises.push(
